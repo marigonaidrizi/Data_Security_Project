@@ -48,3 +48,6 @@ Cipher: RDEEHXTXXXPENJES -> Key: siguriatedhenave -> Decrypted: PERSHENDETJEXXXX
 
 *Nese ne fund te tekstit shafqet X ateher kjo ndodhe se i kemi thene kur nuk mubushet matrixa -> shto X.
 
+ 
+ #### Rezultatet nga programi ###
+ ![REZULTATET](Screenshot.png)
