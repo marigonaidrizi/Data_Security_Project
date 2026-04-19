@@ -1,53 +1,99 @@
-# Data_Security_Project
+# Data Security Project — Cipher Console
 
-Ky projekt ka për qëllim implementimin e dy algoritmeve klasike të kriptografisë:
---Running Key Cipher
---Double Transposition
+Desktop GUI tool that demonstrates two classical ciphers:
 
-Qellimi i projektit eshte te kuptohen bazat e enkriptimit dhe dekriptimit te te dhenave.
+- **Running Key Cipher**
+- **Double Transposition Cipher**
 
+The previous CLI menu has been replaced with a dark, cyber-themed
+CustomTkinter interface.
 
----Running Key Cipher
-Ky algoritem eshte nje forme e   , ku perdoret nje tekst i gjate si key.
+## Requirements
 
---qdo shkronje e tekstit(plaintext) kombinohet me nje shkronje nga key
---shkronjat kthehen ne numra(A=0,...,Z=25)
---perdoret formula:
-   C=(P+K)mod 26
+- Python 3.10+
+- See `requirements.txt`
 
--per dekriptim perdoret:
-P=(C-K+26)mod 26
+```bash
+pip install -r requirements.txt
+```
 
+## Run
 
---Double Transposition Cipher 
-Ky algoritem nuk ndryshon shkronjat,por vetem pozicionin e tyre.
+```bash
+python main.py
+```
 
---Teksti vendoset ne nje matrice
---Kolonat riorganizohen sipas nje qelsi
---Procesi perseritet dy her(prandaj "double")
+`main.py` launches the GUI directly — there is no terminal menu anymore.
 
+## How to use
 
-#####Si ekzekutohet program
-Progami ekzekutohet duke perdorur komanden:
- python main.py
+1. Pick a cipher in the left sidebar (always visible).
+2. Type the **key** in the Key panel. Helper text shows the constraints
+   for the active cipher.
+3. Paste your text into the **Input Text** panel.
+4. Click **Encrypt** or **Decrypt**. The result appears in the
+   **Output Text** panel.
+5. **Swap** moves the output back into the input (handy for round-trip
+   tests). **Clear** resets all fields. The output panel has its own
+   **Copy Text** button.
+6. Validation messages and operation feedback appear in the **Status**
+   panel in the lower part of the sidebar.
 
--pastaj zgjedhim se cilen deshirojme ta ekzekutojme nga algoritmet, i jepum tekstin pastaj key dhe program fillon ta ekzekutoj
+## Cipher behaviour
 
---shembuj 
- ---Running Key Cipher ---
-Tekst:HELLOWORLD -> Key:siguriateknologjise -> Encrypted: ZMRFFEOKPN
+Both ciphers normalise input the same way the original CLI did:
 
---- Running Key Decrypt---
-Cipher:ZMRFFEOKPN -> Key: siguriateknologjise -> Decrypted: HELLOWORLD
+- spaces are removed
+- everything is uppercased
+- only A–Z letters are kept
 
----Double Transposition Encrypt---
-Tekst:PERSHENDETJE -> Key: siguriatedhenave -> Encrypted: RDEEHXTXXXPENJES 
+### Running Key
+- A=0 … Z=25
+- Encrypt: `C = (P + K) mod 26`
+- Decrypt: `P = (C − K + 26) mod 26`
+- The key must be at least as long as the processed text.
 
----Double Transposition Decrypt---
-Cipher: RDEEHXTXXXPENJES -> Key: siguriatedhenave -> Decrypted: PERSHENDETJEXXXX 
+### Double Transposition
+- Text is laid out into a matrix with one column per key character.
+- Missing cells are padded with `X`.
+- Columns are read in the order obtained by sorting the key.
+- The whole process is performed twice.
 
-*Nese ne fund te tekstit shafqet X ateher kjo ndodhe se i kemi thene kur nuk mubushet matrixa -> shto X.
+## Project structure
 
- 
- #### Rezultatet nga programi ###
- ![REZULTATET](Screenshot.png)
+```
+project_root/
+├─ main.py                  # GUI entry point
+├─ requirements.txt
+├─ README.md
+│
+├─ app/                     # GUI layer
+│  ├─ __init__.py
+│  ├─ launcher.py
+│  ├─ main_window.py
+│  ├─ layout.py
+│  ├─ styles.py
+│  └─ widgets.py
+│
+├─ ciphers/                 # Cipher implementations
+│  ├─ __init__.py
+│  ├─ running_key.py
+│  └─ double_transposition.py
+│
+└─ utils/                   # Shared helpers
+   ├─ __init__.py
+   ├─ validators.py
+   └─ text_utils.py
+```
+
+## Examples
+
+| Cipher                         | Input         | Key                   | Result             |
+|--------------------------------|---------------|-----------------------|--------------------|
+| Running Key — Encrypt          | `HELLOWORLD`  | `siguriateknologjise` | `ZMRFFEOKPN`       |
+| Running Key — Decrypt          | `ZMRFFEOKPN`  | `siguriateknologjise` | `HELLOWORLD`       |
+| Double Transposition — Encrypt | `PERSHENDETJE`| `siguriatedhenave`    | `RDEEHXTXXXPENJES` |
+| Double Transposition — Decrypt | `RDEEHXTXXXPENJES` | `siguriatedhenave`| `PERSHENDETJEXXXX` |
+
+> Trailing `X` characters in the decrypted output come from the padding
+> the encryption step adds to fill the matrix.
